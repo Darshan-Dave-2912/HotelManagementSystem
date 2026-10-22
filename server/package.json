@@ -1,0 +1,24 @@
+{
+  "name": "inventorymanagementsystem",
+  "version": "1.0.0",
+  "description": "A Hotel Inventory Management System built with React, Node.js, and PostgreSQL to manage items, stock, purchases, suppliers, stores, and ingredient consumption as part of a larger Hotel Management System ecosystem.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Darshan-Dave-2912/InventoryManagementSystem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Darshan-Dave-2912/InventoryManagementSystem/issues"
+  },
+  "homepage": "https://github.com/Darshan-Dave-2912/InventoryManagementSystem#readme",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
