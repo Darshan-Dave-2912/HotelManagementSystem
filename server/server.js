@@ -1,11 +1,16 @@
 const express = require("express");
 const sequelize = require("./config/database");
+const routes = require("./routes/index");
 
 const app = express();
 const port = process.env.port || 5000;
+const HOST = '0.0.0.0';
 
 // json request body ko read krne ke liye
 app.use(express.json());
+
+//Central api route
+app.use('/api/', routes);
 
 async function startServer() {
     console.log({
@@ -19,8 +24,8 @@ async function startServer() {
         await sequelize.authenticate();
         console.log("Server Connect Successfully...!!!");
         //Server start
-        app.listen(port, () =>{
-        console.log(`Server is running at http://localhost:${port}`);
+        app.listen(port, HOST, () =>{
+        console.log(`Server is running at http://my ip:${port}`);
         });
     } catch (error){
         console.error("Database Connection Failed:", error.message);
