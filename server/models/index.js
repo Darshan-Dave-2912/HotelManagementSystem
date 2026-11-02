@@ -1,13 +1,13 @@
 const Role = require('./roles.model');
-const Users = require('./users.model');
+const User = require('./users.model');
 
 // Associations
-roles.hasMany(users, { foreignKey: 'roleId' });
-users.belongsTo(roles, { foreignKey: 'roleId' });
+Role.hasMany(User, { foreignKey: 'roleId' });
+User.belongsTo(Role, { foreignKey: 'roleId' });
 
 const db = {
     Role,
-    Users
+    User
 };
 
 module.exports = db; 

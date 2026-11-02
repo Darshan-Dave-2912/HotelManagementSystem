@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Darshan-Dave-2912/InventoryManagementSystem#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
     "express-validator": "^7.3.2",

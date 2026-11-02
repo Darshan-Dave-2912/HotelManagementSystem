@@ -38,7 +38,8 @@ const users = sequelize.define('users',
         },
         password:{
             type:DataTypes.STRING(255),
-            allowNull:false
+            allowNull:false,
+            field:'password_hash'
         },
         isActive:{
             type:DataTypes.BOOLEAN,
