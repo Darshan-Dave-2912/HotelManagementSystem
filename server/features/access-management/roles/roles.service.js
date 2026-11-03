@@ -1,12 +1,6 @@
 const { Op, UniqueConstraintError } = require('sequelize');
 const { Role } = require('../../../models');
-
-class AppError extends Error {
-    constructor(message, statusCode) {
-        super(message);
-        this.statusCode = statusCode;
-    }
-}
+const AppError = require('../../../utils/AppError');
 
 const ALLOWED_FIELDS = ['name', 'code', 'description', 'isActive'];
 

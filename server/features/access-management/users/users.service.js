@@ -1,17 +1,12 @@
 const bcrypt = require('bcrypt');
 const { Op, UniqueConstraintError } = require('sequelize');
 const { User, Role } = require('../../../models');
+const AppError = require('../../../utils/AppError');
 
 const SALT_ROUNDS = 12;
 
-class AppError extends Error {
-    constructor (message, statusCode){
-        super(message);
-        this.statusCode = statusCode;
-    }
-}
 
-const ALLOWED_FIELDS = ['roleId', 'username', 'email', 'phone', 'isActive'];
+const ALLOWED_FIELDS = ['roleId', 'userName', 'email', 'phone', 'isActive'];
 
 const SAFE_ATTRIBUTES = { exclude: ['passwordHash'] };
 
@@ -29,9 +24,9 @@ const normalizeUserData = (data) =>
         if(data[field] !== undefined) normalized[field] = data[field];
     }
 
-    if(typeof normalized.username === 'string')
+    if(typeof normalized.userName === 'string')
     {
-        normalized.username = normalized.username.trim()
+        normalized.userName = normalized.userName.trim()
     }
 
     if(typeof normalized.email === 'string')
@@ -97,7 +92,7 @@ const getUser = async (filters) => {
         const search =  filters.search.trim().replace(/[%_\\]/g,'\\$&');
 
         where[Op.or] = [
-            { username: { [Op.iLike]: `%${search}%` } },
+            { userName: { [Op.iLike]: `%${search}%` } },
             { email: { [Op.iLike]: `%${search}%` } },
             { phone: { [Op.iLike]: `%${search}%` } },
         ];
@@ -114,7 +109,7 @@ const getUser = async (filters) => {
     }
 
     const allowSortFields = [
-        'username',
+        'userName',
         'email',
         'phone',
         'lastLoginAt',
@@ -141,8 +136,8 @@ const getUser = async (filters) => {
             page, 
             limit,
             totalRecords: count,
-            totalPages: Math.ceil(counts / limit),
-            hasNextPage: page * limit < counts,
+            totalPages: Math.ceil(count / limit),
+            hasNextPage: page * limit < count,
             hasPreviousPage: page > 1,
         }
     }
@@ -183,7 +178,7 @@ const updateUser = async (id, data) => {
     {
         if(error instanceof UniqueConstraintError)
         {
-            throw new AppError('username, email or phone already exists', 409);
+            throw new AppError('userName, email or phone already exists', 409);
         }
 
         throw error;
@@ -193,7 +188,7 @@ const updateUser = async (id, data) => {
 const deleteUser = async (id) => {
     const user = await getUserById(id);
 
-     user.destroy();
+    await user.destroy();
 
     return  { id: user.id };
 }

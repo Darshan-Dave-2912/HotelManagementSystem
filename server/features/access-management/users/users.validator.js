@@ -33,7 +33,7 @@ const validateCreateUser = [
     .bail()
     .toInt(),
 
-    body('username')
+    body('userName')
     .exists({ checkNull: true })
     .withMessage('User Name is Required')
     .bail()
@@ -124,10 +124,10 @@ const validateUpdateUser = [
     .bail()
     .toInt(),
 
-    body('username')
+    body('userName')
     .optional()
     .isString()
-    .withMessage('username must be a string')
+    .withMessage('userName must be a string')
     .bail()
     .trim()
     .notEmpty()
@@ -175,7 +175,7 @@ const validateUpdateUser = [
     .withMessage('isActive must be a boolean'),
 
     body().custom((value) => {
-        const allowedFields = ['roleId', 'username', 'email', 'phone', 'isActive'];
+        const allowedFields = ['roleId', 'userName', 'email', 'phone', 'isActive'];
 
         if(!value || typeof value !== 'object' || Array.isArray(value)){
             throw new Error('Provide at least one valid field for update');
@@ -232,7 +232,7 @@ const validateListUsers = [
 
     query('sortBy')
     .optional()
-    .isIn(['username', 'email', 'phone', 'lastLoginAt', 'createdAt', 'updatedAt'])
+    .isIn(['userName', 'email', 'phone', 'lastLoginAt', 'createdAt', 'updatedAt'])
     .withMessage('Invalid sortBy field'),
 
     query('sortOrder')

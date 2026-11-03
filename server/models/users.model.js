@@ -32,14 +32,13 @@ const users = sequelize.define('users',
             }
         },
         phone:{
-            type:DataTypes.STRING(150),
+            type:DataTypes.STRING(15),
             allowNull:false,
             unique:true
         },
-        password:{
+        passwordHash:{
             type:DataTypes.STRING(255),
-            allowNull:false,
-            field:'password_hash'
+            allowNull:false
         },
         isActive:{
             type:DataTypes.BOOLEAN,
