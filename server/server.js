@@ -4,6 +4,7 @@ const sequelize = require("./config/database");
 const routes = require("./routes/index");
 const { notFoundErrors, errorHandler } = require("./middlewares/errorHandlers");
 const requestLogger = require('./middlewares/requestLogger');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -11,6 +12,12 @@ const HOST = '0.0.0.0';
 
 // json request body ko read krne ke liye
 app.use(express.json());
+
+app.use(cookieParser());
+app.use((req, res, next) => {
+    console.log('cookies:', req.cookies);
+    next();
+});
 
 app.use((err, req, res, next) => {
     if (err.type === 'entity.parse.failed') {
