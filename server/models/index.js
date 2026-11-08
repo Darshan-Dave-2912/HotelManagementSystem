@@ -1,6 +1,7 @@
 const Role = require('./roles.model');
 const User = require('./users.model');
 const UserSession = require('./userSessions.model');
+const Module = require('./modules.model');
 
 // Associations
 Role.hasMany(User, { foreignKey: 'roleId' });
@@ -12,7 +13,8 @@ UserSession.belongsTo(User, { foreignKey: 'userId' });
 const db = {
     Role,
     User,
-    UserSession
+    UserSession,
+    Module
 };
 
 module.exports = db; 
