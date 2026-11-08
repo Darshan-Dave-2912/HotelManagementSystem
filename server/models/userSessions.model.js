@@ -38,7 +38,7 @@ const userSessions = sequelize.define('userSessions',
         }
     },
     {
-        tableName:'userSessions',
+        tableName:'user_sessions',
         underscored:true,
         timestamps:true,
         paranoid:false,
