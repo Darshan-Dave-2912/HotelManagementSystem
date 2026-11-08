@@ -23,7 +23,7 @@ module.exports = {
         unique:true,
       },
       code:{
-        type:DataTypes.STRING(3),
+        type:DataTypes.STRING(6),
         allowNull:false,
         unique:true,
       },

@@ -44,7 +44,7 @@ const getModule = async (filters) => {
 
     if(filters.search)
     {
-        const search = filters.search.trim().replace(/[%_\\]/g, '\\$%');
+        const search = filters.search.trim().replace(/[%_\\]/g, '\\$&');
 
         where [Op.or] = [
             { name: { [Op.iLike]: `%${search}%` } },
@@ -125,7 +125,6 @@ const deleteModule = async (id) => {
 }
 
 module.exports = {
-    AppError,
     createModule,
     getModule,
     getModuleById,

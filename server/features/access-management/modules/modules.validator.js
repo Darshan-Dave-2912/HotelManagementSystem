@@ -5,7 +5,7 @@ const validateRequest = (req, res, next) => {
 
     if(!errors.isEmpty()){
         return res.status(400).json({
-            sucess:false,
+            success:false,
             message:'Validation failed',
             errors: errors.array().map((error) => ({
                 field: error.path,
@@ -86,6 +86,7 @@ const validateUpdateModule = [
     .withMessage('Module code must be a string')
     .bail()
     .trim()
+    .notEmpty()
     .withMessage('Module code cannot be empty')
     .bail()
     .isLength({ max: 6 })
@@ -102,14 +103,14 @@ const validateUpdateModule = [
     body().custom((value) => {
         const allowedFields = ['name','code','isActive'];
 
-        if(!value || typeof value !== 'object' || Array.isArray(value) || !Object.keys(value).some((key) => allowedFields.includes(key)))
+        if(!value || typeof value !== 'object' || Array.isArray(value))
         {
-            throw new Error('Provide at lease one valid field for update');
+            throw new Error('Request body must be an object');
         }
 
         const key = Object.key(value);
         if(!key.some((key) => allowedFields.includes(key))){
-            throw new Error('Provide at least one field to update')
+            throw new Error('Provide at least one field for update')
         };
 
         const invalidFields = key.filter(
@@ -122,7 +123,6 @@ const validateUpdateModule = [
         }
         return true;
     }),
-    validateRequest,
 ];
 
 const validateListModules = [
@@ -135,7 +135,11 @@ const validateListModules = [
 
     query('isActive').optional().isBoolean().withMessage('isActive must be a boolean'),
 
-    query('sortBy').optional().isIn(['ASC','DESC','asc','desc']).withMessage('sortOrder must be ASC or DESC'),
+    query('sortBy').optional().isIn(['id','name','code','createdAt','updatedAt'])
+    .withMessage('Invalid sortBy field'),
+
+    query('sortOrder').optional().isIn(['ASC','DESC','asc','desc'])
+    .withMessage('sortOrder must be ASC or DESC'),
 
     validateRequest,
 ];
