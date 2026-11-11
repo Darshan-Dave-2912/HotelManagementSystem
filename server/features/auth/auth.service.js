@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const { Op } = require('sequelize');
 const sequelize = require('../../config/database');
 const { User, Role } = require('../../models');
-const AppErrpr = require('../../utils/AppError');
 const authConfig = require('../../config/auth.config');
 const userSessionService = require('../access-management/userSessions/userSession.service');
 const {
@@ -16,13 +15,13 @@ const DUMMY_HASH = bcrypt.hashSync('dumy-password-for-timing', 12);
 
 const ROLE_INCLUDE = [
     {
-        model: Role, attribute:['id','name','code']
+        model: Role, attributes:['id','name','code']
     },
 ];
 
 const buildExpiry = () => new Date(Date.now() + authConfig.refreshExpiresInMs);
 
-const login = async ({ identifier, password }, { ipAddress }) =>
+const login = async ({ identifier, password }, { ipAddress, userAgent }) =>
 {
     const loginId = identifier.trim();
 
@@ -40,12 +39,12 @@ const login = async ({ identifier, password }, { ipAddress }) =>
 
     if (!user || !isPasswordValid)
     {
-        throw new AppErrpr('Invalid credentials', 401);
+        throw new AppError('Invalid credentials', 401);
     }
 
     if(!user.isActive)
     {
-        throw new AppError('Your account is Active. Please contact administrator', 403);
+        throw new AppError('Your account is inactive. Please contact administrator', 403);
     }
 
     const refreshToken = generateRefreshToken();
@@ -58,6 +57,7 @@ const login = async ({ identifier, password }, { ipAddress }) =>
                 refreshTokenHash: hashToken(refreshToken),
                 expiresAt: buildExpiry(),
                 ipAddress,
+                userAgent
             },
             t
         );
@@ -78,43 +78,63 @@ const login = async ({ identifier, password }, { ipAddress }) =>
     return { accessToken, refreshToken, user: safeUSer };
 };
 
-const refresh = async (refreshToken, { ipAddress }) => 
+const refresh = async (refreshToken, { ipAddress }) =>
 {
-    if(!refreshToken)
+    if (!refreshToken)
     {
         throw new AppError('Refresh token missing', 401);
     }
 
+    const tokenHash = hashToken(refreshToken);
+
     const result = await sequelize.transaction(async (t) =>
     {
-        const session = await userSessionService.findByRefreshHash(hashToken(refreshToken), t);
+        const session = await userSessionService.findByRefreshHash(tokenHash, t);
 
         if (!session)
         {
-            return { status: 'invalid' };
+            const reusedSession = await userSessionService.findByPreviousRefreshHash(tokenHash, t);
+
+            if (reusedSession)
+            {
+                await userSessionService.revokeSession(
+                    reusedSession,
+                    { reason: userSessionService.REVOKE_REASONS.REUSE_DETECTED },
+                    t
+                );
+            }
+
+            return { status: reusedSession ? 'reused' : 'invalid' };
         }
 
-        if(session.expiresAt <= new Date())
+        if (session.revokedAt)
+        {
+            return { status: 'revoked' };
+        }
+
+        if (session.expiresAt <= new Date())
         {
             return { status: 'expired' };
         }
 
-        const user = await User.findByPk( session.userId, { transaction: t });
+        const user = await User.findByPk(session.userId, { transaction: t });
 
-        if(!user || !user.isActive)
+        if (!user || !user.isActive)
         {
-            await userSessionService.revokeSession(session, t);
-            return { status: 'inActive' };
+            await userSessionService.revokeSession(
+                session,
+                { reason: userSessionService.REVOKE_REASONS.USER_INACTIVE },
+                t
+            );
+            return { status: 'inactive' };
         }
 
         const newRefreshToken = generateRefreshToken();
 
-        await userSessionService.revokeSession(session, t);
-
-        const newSession = await userSessionService.createSession(
+        await userSessionService.rotateSession(
+            session,
             {
-                userId: user.id,
-                refreshTokenHash: hashToken(newRefreshToken),
+                newRefreshTokenHash: hashToken(newRefreshToken),
                 expiresAt: buildExpiry(),
                 ipAddress,
             },
@@ -124,12 +144,13 @@ const refresh = async (refreshToken, { ipAddress }) =>
         const accessToken = generateAccessToken({
             userId: user.id,
             roleId: user.roleId,
-            sessionId: newSession.id,
+            sessionId: session.id,
         });
 
         return { status: 'ok', accessToken, refreshToken: newRefreshToken };
     });
 
+    
     if (result.status !== 'ok')
     {
         throw new AppError('Invalid or expired refresh token', 401);
@@ -138,18 +159,21 @@ const refresh = async (refreshToken, { ipAddress }) =>
     return { accessToken: result.accessToken, refreshToken: result.refreshToken };
 };
 
-const logout = async (refreshToken) => 
+const logout = async (refreshToken) =>
 {
-    if(!refreshToken)
+    if (!refreshToken)
     {
         return;
     }
 
     const session = await userSessionService.findByRefreshHash(hashToken(refreshToken));
 
-    if(session)
+    if (session)
     {
-        await userSessionService.revokeSession(session);
+        await userSessionService.revokeSession(
+            session,
+            { reason: userSessionService.REVOKE_REASONS.LOGOUT }
+        );
     }
 };
 

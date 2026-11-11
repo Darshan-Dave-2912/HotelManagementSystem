@@ -19,7 +19,7 @@ const login = async (req, res, next) =>
     try{
         const { accessToken, refreshToken, user } = await authService.login(
             req.body,
-            { ipAddress: req.ip }
+            { ipAddress: req.ip, userAgent: req.get('user-agent')?.slice(0, 255) }
         );
 
         setRefreshCookie(res, refreshToken);
@@ -73,7 +73,7 @@ const logout = async (req, res, next) =>
 {
     try
     {
-        await authService.logout(req.cookies[authConfig.refreshCookieName]);
+        await authService.logout(req.cookies?.[authConfig.refreshCookieName]);
 
         clearRefreshCookie(res);
 

@@ -19,8 +19,8 @@ const userSessions = sequelize.define('userSessions',
             }
         },
         ipAddress:{
-        type:DataTypes.STRING(45),
-        allowNull:true
+            type:DataTypes.STRING(45),
+            allowNull:true
         },
         refreshTokenHash:{
             type:DataTypes.STRING(255),
@@ -35,6 +35,31 @@ const userSessions = sequelize.define('userSessions',
             type:DataTypes.DATE,
             allowNull:true,
             defaultValue:null
+        },        
+        previousRefreshTokenHash:{
+            type:DataTypes.STRING(255),
+            allowNull:true
+        },
+        lastActiveAt:{
+            type:DataTypes.DATE,
+            allowNull:false,
+            defaultValue:DataTypes.NOW
+        },
+        userAgent:{
+            type:DataTypes.STRING(255),
+            allowNull:true
+        },
+        revokedBy:{
+            type:DataTypes.UUID,
+            allowNull:true,
+            references:{
+                model:'users',
+                key:'id'
+            }
+        },
+        revokeReason:{
+            type:DataTypes.STRING(30),
+            allowNull:true
         }
     },
     {
