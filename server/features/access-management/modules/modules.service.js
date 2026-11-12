@@ -1,6 +1,7 @@
 const { Op, UniqueConstraintError } = require('sequelize');
 const { Module } = require('../../../models');
 const AppError = require('../../../utils/AppError');
+const permissionCache = require('../permissions/permissionCache.service');
 
 const ALLOWED_FIELDS = ['name', 'code', 'isActive'];
 
@@ -104,6 +105,10 @@ const updateModule = async (id, data) => {
 
     try{
         await module.update(normalizeModuleData(data));
+
+        if (data.isActive !== undefined || data.code !== undefined) {
+            await permissionCache.invalidateAllRoles();
+        }
         return module;
     }
     catch(error)
@@ -120,6 +125,8 @@ const deleteModule = async (id) => {
     const module = await getModuleById(id);
 
     await module.destroy();
+
+    await permissionCache.invalidateAllRoles();
 
     return { id: module.id };
 }

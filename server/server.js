@@ -5,6 +5,7 @@ const routes = require("./routes/index");
 const { notFoundErrors, errorHandler } = require("./middlewares/errorHandlers");
 const requestLogger = require('./middlewares/requestLogger');
 const cookieParser = require('cookie-parser');
+const { connectRedis, disconnectRedis } = require('./config/redis.config');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -45,16 +46,34 @@ app.use(notFoundErrors);
 //Global Error Handler
 app.use(errorHandler);
 
+const registerGracefulShutdown = (server) => {
+    const shutdown = (signal) => {
+        console.log(`${signal} received. Shutting down gracefully...`);
+        server.close(async () => {
+            await disconnectRedis();
+            await sequelize.close();
+            process.exit(0);
+        });
+        setTimeout(() => process.exit(1), 10000).unref();
+    };
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+};
+
 async function startServer() {
     try{
         await sequelize.authenticate();
         console.log("Database connected successfully...!!!");
+        connectRedis();
+
         //Server start
-        app.listen(port, HOST, () =>{
+        const server = app.listen(port, HOST, () =>{
         console.log(`Server is running on port ${port}`);
         });
+
+        registerGracefulShutdown(server);
     } catch (error){
-        console.error("Database Connection Failed:", error.message);
+        console.error("Server startup failed:", error.message);
         process.exit(1);
     }
 }

@@ -1,6 +1,8 @@
 const { Op, UniqueConstraintError } = require('sequelize');
 const { Role } = require('../../../models');
 const AppError = require('../../../utils/AppError');
+const { permissionCache } = require('../permissions/permissionCache.service');
+const { assertManagementAccessRemains } = require('../permissions/permissionGuard.service');
 
 const ALLOWED_FIELDS = ['name', 'code', 'description', 'isActive'];
 
@@ -114,7 +116,13 @@ const updateRole = async (id, data) => {
     const role = await getRoleById(id);
 
     try{
+        
+        if (['false', '0'].includes(String(data.isActive).toLowerCase())) {
+            await assertManagementAccessRemains({ excludedRoleIds: [role.id] });
+        }
+
         await role.update(normalizeRoleData(data));
+        await permissionCache.invalidateRole(role.id);
         return role;
     }
     catch(error)
@@ -130,7 +138,9 @@ const updateRole = async (id, data) => {
 const deleteRole = async (id) => {
     const role = await getRoleById(id);
     
+    await assertManagementAccessRemains({ excludedRoleIds: [role.id] });
     await role.destroy();
+    await permissionCache.invalidateRole(role.id);
 
     return { id: role.id };
 };
