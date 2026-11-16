@@ -15,10 +15,6 @@ const HOST = '0.0.0.0';
 app.use(express.json());
 
 app.use(cookieParser());
-app.use((req, res, next) => {
-    console.log('cookies:', req.cookies);
-    next();
-});
 
 app.use((err, req, res, next) => {
     if (err.type === 'entity.parse.failed') {

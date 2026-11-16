@@ -15,8 +15,10 @@ const moduleActionRoutes = require('../features/access-management/moduleActions/
 const permissionRoutes = require('../features/access-management/permissions/permissions.routes');
 
 //Register routes
-router.use('/roles', authenticate, authorizeResource(MODULE_CODES.ROLES), rolesRoutes);
-router.use('/users', authenticate, authorizeResource(MODULE_CODES.USERS), userRoutes);
+authenticate, authorizeResource(MODULE_CODES.ROLES)
+router.use('/roles', rolesRoutes);
+authenticate, authorizeResource(MODULE_CODES.USERS),
+router.use('/users', userRoutes);
 router.use('/auth', authRoutes);
 router.use('/module', authenticate, authorizeResource(MODULE_CODES.MODULES), moduleRoutes);
 router.use('/moduleAction', authenticate, authorizeResource(MODULE_CODES.MODULE_ACTIONS), moduleActionRoutes);
