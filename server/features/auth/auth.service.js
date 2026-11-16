@@ -10,6 +10,7 @@ generateRefreshToken,
 hashToken
 } = require('../../utils/token.util');
 const AppError = require('../../utils/AppError');
+const { getRolePermissionCodes } = require('../access-management/permissions/permissionCache.service');
 
 const DUMMY_HASH = bcrypt.hashSync('dumy-password-for-timing', 12);
 
@@ -159,6 +160,16 @@ const refresh = async (refreshToken, { ipAddress }) =>
     return { accessToken: result.accessToken, refreshToken: result.refreshToken };
 };
 
+const getMyPermissions = async (roleId) =>
+{
+    if (!roleId)
+    {
+        return [];
+    }
+
+    return getRolePermissionCodes(roleId);
+};
+
 const logout = async (refreshToken) =>
 {
     if (!refreshToken)
@@ -181,4 +192,5 @@ module.exports = {
     login,
     refresh,
     logout,
+    getMyPermissions
 };

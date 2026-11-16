@@ -1,0 +1,16 @@
+export const MODULE_CODES = {
+  ROLES: 'ROLE',
+  USERS: 'USER',
+  MODULES: 'MODULE',
+  MODULE_ACTIONS: 'MODACT',
+  PERMISSIONS: 'PERM',
+}
+
+export const ACTION_CODES = {
+  VIEW: 'VIEW',
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+  GRANT: 'GRANT',
+  REVOKE: 'REVOKE',
+}

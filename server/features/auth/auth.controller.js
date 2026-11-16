@@ -69,6 +69,24 @@ const refresh = async (req, res, next) =>
     }
 };
 
+const myPermissions = async (req, res, next) =>
+{
+    try
+    {
+        const permissions = await authService.getMyPermissions(req.user.roleId);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Permissions fetch successfully',
+            data: { permissions },
+        });
+    }
+    catch(error)
+    {
+        next(error);
+    }
+};
+
 const logout = async (req, res, next) => 
 {
     try
@@ -107,6 +125,7 @@ const me = async (req, res, next) =>
 module.exports = {
     login,
     refresh,
+    myPermissions,
     logout,
     me,
 };
