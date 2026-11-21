@@ -13,9 +13,6 @@ const router = express.Router();
 
 // NOTE: authenticate routes/index.js me lag chuka hai
 
-// Sirf login chahiye, koi permission nahi (har user apni permissions dekh sakta hai)
-router.route('/me').get(permissionController.getMyPermissions);
-
 router.route('/history').get(
     authorize(MODULE_CODES.PERMISSIONS, ACTION_CODES.VIEW),
     validateListPermissions,

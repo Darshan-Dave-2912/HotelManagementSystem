@@ -25,5 +25,11 @@ export function usePermissions() {
     [permissions],
   )
 
-  return { permissions, can, isLoading: query.isLoading }
+return {
+  permissions,
+  can,
+  isLoading: query.isLoading,
+  isError: query.isError,
+  refetch: query.refetch,
+}
 }
