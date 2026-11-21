@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { Role, Permission, ModuleActions, Module } = require('../../../models');
+const { Role, permissions: Permission, ModuleActions, Module } = require('../../../models');
 const { redisClient, isRedisReady } = require('../../../config/redis.config');
 
 const CACHE_PREFIX = 'permissions:role:';
