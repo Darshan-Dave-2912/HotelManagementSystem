@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.route('/login').post(validateLogin, authController.login);
 router.route('/refresh').post(authController.refresh);
+router.route('/me/permissions').get(authenticate, authController.myPermissions);
 router.route('/logout').post(authController.logout);
 router.route('/me').get(authenticate, authController.me);
 

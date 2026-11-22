@@ -1,5 +1,4 @@
 const permissionService = require('./permissions.service');
-const permissionCache = require('./permissionCache.service');
 
 const grantPermission = async (req, res, next) => {
     try{
@@ -81,36 +80,11 @@ const getPermissionHistory = async (req, res, next) => {
     }
 };
 
-// Logged-in user ke current role ki effective permissions (frontend menu/buttons ke liye)
-const getMyPermissions = async (req, res, next) => {
-    try{
-        const codes = await permissionCache.getRolePermissionCodes(req.user.roleId);
-
-        const grouped = {};
-        for(const code of codes){
-            const [moduleCode, actionCode] = code.split(':');
-            (grouped[moduleCode] ||= []).push(actionCode);
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: 'My permissions fetch successfully',
-            data: {
-                roleId: req.user.roleId,
-                permissions: grouped,
-            },
-        });
-    }
-    catch(error){
-        next(error);
-    }
-};
 
 module.exports = {
     grantPermission,
     revokePermission,
     syncRolePermissions,
     getRolePermissions,
-    getPermissionHistory,
-    getMyPermissions,
+    getPermissionHistory
 };
