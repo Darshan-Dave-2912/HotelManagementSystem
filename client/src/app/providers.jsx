@@ -11,7 +11,7 @@ export default function Providers({ children }) {
       <TooltipProvider>
         <AuthProvider>{children}</AuthProvider>
       </TooltipProvider>
-      <Toaster richColors />
+      <Toaster richColors closeButton position="top-right" />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
