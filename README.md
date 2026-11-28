@@ -1,52 +1,56 @@
 # 🏨 Hotel Management System
 
-A full-stack **Hotel Management System** designed to manage hotel operations through a modular and scalable application architecture. The project is being developed using modern web technologies, with each module responsible for a specific area of hotel management.
+A modular, full-stack **Hotel Management Ecosystem** designed to manage and connect the complete workflow of a hotel through a single application.
 
-The goal is to build a practical, maintainable system that brings hotel operations together in one place.
+The system aims to bring hotel administration, inventory, room operations, reservations, guest management, restaurant operations, billing, and access control together under one platform.
 
-## 🚀 Project Overview
+Rather than building separate applications for different departments, each business area will work as an independent module while sharing a common backend, database, and authentication system.
 
-The Hotel Management System is the main application in which multiple hotel management modules will be developed and integrated.
+**Project Scope:** Single-hotel management system.
 
-Instead of maintaining separate applications for individual operations, the system will organize related functionality into independent modules that share a common backend and database.
+---
 
-**Current scope:** Single-hotel management system.
+## 🎯 Project Vision
 
-## 🛠️ Technology Stack
+The goal is to build a centralized hotel management platform where different departments can manage their operations through interconnected modules.
 
-### Frontend
+```text
+                 HOTEL MANAGEMENT SYSTEM
+                           |
+       +-------------------+-------------------+
+       |                   |                   |
+   Administration      Hotel Operations    Food Operations
+       |                   |                   |
+   Users & Roles       Rooms & Bookings     Menu & Orders
+   Permissions         Guest Management     Restaurant / POS
+   Dashboard           Billing              Ingredient Usage
+       |                   |                   |
+       +-------------------+-------------------+
+                           |
+                  Shared Backend & Database
+```
 
-- React.js
-- JavaScript
-- Tailwind CSS
-- Redux Toolkit
-- TanStack Query (where required)
+Each module will manage its own responsibilities while supporting communication and data sharing with other modules wherever required.
 
-### Backend
+## 🧩 Application Modules
 
-- Node.js
-- Express.js
-- JavaScript
+The application is organized around the following major business areas.
 
-### Database
+### 1. Administration & Access Management
 
-- PostgreSQL
-- Sequelize
+Provides centralized control over application users, roles, modules, and permissions.
 
-### Development Tools
+- User Management
+- Role Management
+- Module Management
+- Module Action Management
+- Permission Management
+- Authentication & Authorization
+- Dashboard
 
-- Git & GitHub
-- Visual Studio Code
-- pgAdmin
-- Postman
+### 2. Inventory Management
 
-## 📦 Planned Modules
-
-### 1. Inventory Management
-
-Manage hotel inventory, stock levels, item information, and inventory transactions.
-
-Planned features:
+Manages hotel inventory, purchasing, stock movement, and ingredient consumption.
 
 - Item Master
 - Item Categories
@@ -59,9 +63,9 @@ Planned features:
 - Batch & Expiry Tracking
 - Inventory Reports
 
-### 2. Hotel Operations
+### 3. Hotel Operations
 
-Planned modules for managing day-to-day hotel activities:
+Manages room-related activities and the guest lifecycle.
 
 - Room Management
 - Reservation & Booking Management
@@ -69,63 +73,194 @@ Planned modules for managing day-to-day hotel activities:
 - Check-in & Check-out
 - Billing & Invoicing
 
-### 3. Restaurant & Food Operations
+### 4. Restaurant & Food Operations
 
-Planned functionality for restaurant-related activities:
+Manages restaurant activities and food-related workflows.
 
 - Menu Management
 - Food Ordering / POS
 - Parcel Orders
-- Recipe and Ingredient Usage Integration
+- Recipe Management
+- Inventory Ingredient Integration
 
-### 4. Authentication & Access Control
+### 5. Reporting & Business Insights
 
-- User Authentication
-- Role-Based Access Control
-- Permissions Management
+Provides operational visibility across different hotel departments.
 
-*Modules and features will be implemented incrementally as the project develops.*
+- Inventory Reports
+- Purchase Reports
+- Room Occupancy Reports
+- Booking Reports
+- Restaurant Sales Reports
+- Business Performance Insights
 
-## 🏗️ Architecture Approach
-
-The application will follow a modular architecture to keep features organized and easier to maintain.
-
-- **Frontend:** Feature-based React and JavaScript structure.
-- **Backend:** Modular Express application with separated routes, controllers, services, and data-access logic.
-- **Database:** Relational PostgreSQL schema with clearly defined relationships and constraints.
-- **Business Logic:** Dedicated service layers for domain-specific operations.
-- **Data Integrity:** Database transactions and validation for critical operations.
-- **Version Control:** Git and GitHub for tracking development progress.
-
-## 🗺️ Development Roadmap
-
-- [ ] Project setup and folder structure
-- [ ] Database planning and ER diagrams
-- [ ] Authentication and authorization
-- [ ] Inventory Management module
-- [ ] Purchase and Supplier Management
-- [ ] Stock tracking and inventory reporting
-- [ ] Restaurant and Parcel Order Management
-- [ ] Room, Booking and Guest Management
-- [ ] Module integration
-- [ ] Testing and validation
-- [ ] Deployment
-
-## 🎯 Project Goals
-
-- Build a practical hotel management application.
-- Strengthen React, JavaScript, Node.js, Express, and PostgreSQL fundamentals.
-- Apply proper database design and business logic.
-- Understand modular architecture and backend development practices.
-- Maintain code quality and version history using Git and GitHub.
-- Create a project suitable for portfolio demonstrations and technical interviews.
-
-## 📌 Project Status
-
-**Status:** In Development
-
-The project is being developed incrementally, starting with requirement analysis, database design, and core module implementation. Features listed in the roadmap are planned and may not yet be implemented.
+*These modules and features will be implemented incrementally. Their listing does not indicate that they are already available.*
 
 ---
 
-Built as a learning and portfolio project to explore full-stack development through a real-world hotel management use case.
+## 🛠️ Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend | React, JavaScript, Tailwind CSS |
+| UI Components | Radix UI, shadcn/ui |
+| Data Fetching | TanStack Query |
+| Forms & Validation | React Hook Form, Zod |
+| API Communication | Axios |
+| Backend | Node.js, Express.js |
+| Database | PostgreSQL |
+| ORM | Sequelize |
+| Permission Cache | Redis (Optional) |
+| Authentication | JWT, HTTP-only Cookies |
+| Development Tools | Git, GitHub, VS Code, Postman, pgAdmin |
+
+---
+
+## 🏗️ Architecture Overview
+
+The application follows a feature-based and modular architecture.
+
+```text
+Hotel Management System
+│
+├── client/
+│   └── React Application
+│       ├── Features
+│       ├── Components
+│       ├── Routes
+│       ├── Services
+│       └── Shared Utilities
+│
+└── server/
+    ├── Features
+    ├── Routes
+    ├── Middlewares
+    ├── Models
+    ├── Database
+    ├── Config
+    └── Utilities
+```
+
+**Architecture Principles:**
+
+- Feature-based module organization.
+- Separation of routes, controllers, and services.
+- Shared authentication and authorization.
+- Relational database design with Sequelize.
+- Centralized error handling.
+- Reusable frontend components.
+- Permission-based resource access.
+- Optional Redis-based permission caching.
+
+---
+
+## 🔐 Authentication & Authorization
+
+The system includes a centralized access-control foundation.
+
+- JWT-based authentication.
+- Access and refresh token workflow.
+- Role-based access control (RBAC).
+- Module and action-based permissions.
+- Protected frontend routes.
+- Backend authentication and authorization middleware.
+- Optional Redis permission caching with PostgreSQL fallback.
+
+Administrators can manage users, roles, modules, and permissions to control access to application resources.
+
+---
+
+## 📌 Current Development Status
+
+<text>**Status: In Development**</text>
+
+The current implementation focuses on establishing the application's core foundation.
+
+### Implemented Foundation
+
+- [x] React frontend setup
+- [x] Express backend setup
+- [x] PostgreSQL database integration
+- [x] Sequelize ORM configuration
+- [x] Authentication foundation
+- [x] Dashboard
+- [x] User Management
+- [x] Role Management
+- [x] Module Management
+- [x] Module Action Management
+- [x] Permission Management
+- [x] Authentication and authorization middleware
+- [x] Optional Redis permission-cache configuration
+
+### Planned Development
+
+- [ ] Complete Inventory Management
+- [ ] Purchase and Supplier workflows
+- [ ] Stock and Ingredient Consumption
+- [ ] Room Management
+- [ ] Reservation and Booking Management
+- [ ] Guest Management
+- [ ] Check-in and Check-out
+- [ ] Restaurant and POS Management
+- [ ] Billing and Invoicing
+- [ ] Cross-module integration
+- [ ] Automated testing
+- [ ] Production deployment
+
+---
+
+## 🗺️ Development Roadmap
+
+```text
+Core Application Foundation
+          |
+          v
+Inventory Management
+          |
+          v
+Hotel Operations
+          |
+          v
+Restaurant & Food Operations
+          |
+          v
+Cross-Module Integration
+          |
+          v
+Testing & Optimization
+          |
+          v
+Production Deployment
+```
+
+---
+
+## 📚 Project Documentation
+
+The project documentation covers the system's requirements, scope, business workflows, architecture, database design, coding standards, development practices, testing strategy, deployment, and future roadmap.
+
+It serves as the reference for maintaining consistency as new modules are developed.
+
+---
+
+## 💡 Project Goals
+
+- Build a centralized hotel management ecosystem.
+- Understand real-world business workflows.
+- Apply scalable database and backend design principles.
+- Develop reusable and maintainable application modules.
+- Implement secure authentication and authorization.
+- Integrate different hotel departments through shared data.
+- Maintain a professional development workflow using Git and GitHub.
+
+---
+
+## 🔮 Future Direction
+
+The long-term vision is to develop a complete, interconnected hotel management platform where all major hotel departments can operate through one application.
+
+The current scope focuses on a single hotel. Multi-hotel support may be considered in the future.
+
+---
+
+**Built as a full-stack development and portfolio project focused on real-world hotel management workflows.**
